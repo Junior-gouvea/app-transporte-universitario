@@ -11,7 +11,6 @@ class ListaMotoristaView extends StatefulWidget {
 }
 
 class _ListaMotoristaViewState extends State<ListaMotoristaView> {
-  // Dados estáticos (mockados) para demonstrar a listagem
   final List<PresencaModel> _alunos = [
     PresencaModel(alunoId: '1', nomeAluno: 'Ana Souza', vaiNaIda: true, vaiNaVolta: true, pontoEmbarque: 'Praça Central'),
     PresencaModel(alunoId: '2', nomeAluno: 'Bruno Lima', vaiNaIda: true, vaiNaVolta: false, pontoEmbarque: 'Posto de Combustível'),

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class _Viagem {
   final String data;
-  final String sentido; // 'Ida' ou 'Volta'
+  final String sentido; 
   final String ponto;
   final String horario;
-  final String status; // 'Realizada' ou 'Cancelada'
+  final String status; 
 
   const _Viagem(this.data, this.sentido, this.ponto, this.horario, this.status);
 }
@@ -18,7 +18,6 @@ class HistoricoViagensView extends StatefulWidget {
 }
 
 class _HistoricoViagensViewState extends State<HistoricoViagensView> {
-  // Dados estáticos (mockados) para demonstrar a listagem
   static const List<_Viagem> _viagens = [
     _Viagem('06/10/2026', 'Volta', 'Praça Central', '22:30', 'Realizada'),
     _Viagem('06/10/2026', 'Ida', 'Praça Central', '18:10', 'Realizada'),

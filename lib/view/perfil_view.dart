@@ -21,7 +21,6 @@ class _PerfilViewState extends State<PerfilView> {
     if (_carregado) return;
     _carregado = true;
 
-    // A Home envia nome e e-mail do usuário como argumento da rota
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is Map<String, String>) {
       _nomeSalvo = args['nome'] ?? _nomeSalvo;
@@ -37,18 +36,16 @@ class _PerfilViewState extends State<PerfilView> {
   }
 
   void _salvar() {
-    // Nome preenchido e com o mínimo de caracteres (validator do Form)
     if (!_formKey.currentState!.validate()) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Perfil atualizado com sucesso!')),
     );
-    // Devolve o novo nome para a tela anterior (Home), que passa a usá-lo
     Navigator.pop(context, _nomeCtrl.text.trim());
   }
 
   void _cancelar() {
-    _nomeCtrl.text = _nomeSalvo; // volta para o nome salvo
+    _nomeCtrl.text = _nomeSalvo; 
     _formKey.currentState?.validate();
     FocusScope.of(context).unfocus();
   }

@@ -9,7 +9,6 @@ class GerenciarPontosView extends StatefulWidget {
 }
 
 class _GerenciarPontosViewState extends State<GerenciarPontosView> {
-  // Dados estáticos (mockados) para demonstrar a listagem
   final List<({String nome, String horario})> _pontos = [
     (nome: 'Praça Central', horario: '18:10'),
     (nome: 'Posto de Combustível', horario: '18:20'),

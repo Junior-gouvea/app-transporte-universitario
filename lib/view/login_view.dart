@@ -23,8 +23,6 @@ class _LoginViewState extends State<LoginView> {
   }
 
   void _entrar() {
-    // Campos preenchidos e e-mail com formato válido; se falhar, o Form
-    // mostra a mensagem de erro abaixo do campo.
     if (!_formKey.currentState!.validate()) return;
 
     Navigator.pushReplacementNamed(

@@ -19,10 +19,8 @@ class _RecuperarSenhaViewState extends State<RecuperarSenhaView> {
   }
 
   void _solicitar() {
-    // Campo preenchido e e-mail com formato válido (validator do Form)
     if (!_formKey.currentState!.validate()) return;
 
-    // Nesta etapa (somente front-end) o envio é simulado
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(

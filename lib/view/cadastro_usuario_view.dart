@@ -30,13 +30,11 @@ class _CadastroUsuarioViewState extends State<CadastroUsuarioView> {
   }
 
   void _cadastrar() {
-    // Campos obrigatórios, e-mail válido e senhas iguais (validators do Form)
     if (!_formKey.currentState!.validate()) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Conta criada com sucesso!')),
     );
-    // Após o cadastro o usuário acessa o app
     Navigator.pushNamedAndRemoveUntil(
       context,
       'home_aluno',

@@ -25,7 +25,6 @@ class _ConfirmarPresencaViewState extends State<ConfirmarPresencaView> {
 
   @override
   Widget build(BuildContext context) {
-    // ListenableBuilder escuta o controller e remove o listener sozinho
     return ListenableBuilder(
       listenable: _controller,
       builder: (context, _) {

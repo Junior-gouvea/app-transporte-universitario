@@ -18,7 +18,6 @@ class _HomeAlunoViewState extends State<HomeAlunoView> {
     if (_carregado) return;
     _carregado = true;
 
-    // Login/Cadastro enviam nome e e-mail como argumento da rota
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is Map<String, String>) {
       _nome = args['nome'] ?? _nome;
@@ -29,7 +28,6 @@ class _HomeAlunoViewState extends State<HomeAlunoView> {
   String get _inicial => _nome.isNotEmpty ? _nome[0].toUpperCase() : '?';
 
   Future<void> _abrirPerfil() async {
-    // O Perfil devolve o novo nome (se o usuário salvar) e a Home o exibe
     final novoNome = await Navigator.pushNamed<String>(
       context,
       'perfil',
@@ -41,7 +39,7 @@ class _HomeAlunoViewState extends State<HomeAlunoView> {
   }
 
   void _abrir(String rota) {
-    Navigator.pop(context); // fecha o menu lateral
+    Navigator.pop(context); 
     Navigator.pushNamed(context, rota);
   }
 
