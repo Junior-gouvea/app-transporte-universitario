@@ -1,5 +1,3 @@
-import 'package:app_projeto/controller/gerenciar_pontos_controller.dart';
-import 'package:app_projeto/controller/sessao_controller.dart';
 import 'package:app_projeto/view/cadastro_usuario_view.dart';
 import 'package:app_projeto/view/confirmar_presenca_view.dart';
 import 'package:app_projeto/view/gerenciar_pontos_view.dart';
@@ -12,20 +10,8 @@ import 'package:app_projeto/view/recuperar_senha_view.dart';
 import 'package:app_projeto/view/sobre_view.dart';
 import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 
 void main() {
-  // Sessão (usuário logado) compartilhada entre todas as telas
-  if (!GetIt.I.isRegistered<SessaoController>()) {
-    GetIt.I.registerSingleton<SessaoController>(SessaoController());
-  }
-  // Pontos de embarque compartilhados (Gerenciar Pontos + Confirmar Presença)
-  if (!GetIt.I.isRegistered<GerenciarPontosController>()) {
-    GetIt.I.registerSingleton<GerenciarPontosController>(
-      GerenciarPontosController(),
-    );
-  }
-
   runApp(
     DevicePreview(
       builder: (context) => const MainApp(),

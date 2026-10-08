@@ -11,6 +11,12 @@ class ConfirmarPresencaView extends StatefulWidget {
 class _ConfirmarPresencaViewState extends State<ConfirmarPresencaView> {
   final _controller = ConfirmarPresencaController();
 
+  static const List<String> _pontos = [
+    'Praça Central',
+    'Posto de Combustível',
+    'Entrada da Cidade',
+  ];
+
   @override
   void dispose() {
     _controller.dispose();
@@ -23,7 +29,6 @@ class _ConfirmarPresencaViewState extends State<ConfirmarPresencaView> {
     return ListenableBuilder(
       listenable: _controller,
       builder: (context, _) {
-        final semPontos = _controller.pontoEmbarque == null;
         return Scaffold(
           appBar: AppBar(
             title: const Text('Confirmar Presença'),
@@ -47,7 +52,6 @@ class _ConfirmarPresencaViewState extends State<ConfirmarPresencaView> {
                     onChanged: _controller.alternarVolta,
                   ),
                   const SizedBox(height: 20),
-                  // Itens vêm dos pontos cadastrados em Gerenciar Pontos
                   InputDecorator(
                     decoration: const InputDecoration(
                       labelText: 'Ponto de Embarque / Desembarque',
@@ -57,9 +61,8 @@ class _ConfirmarPresencaViewState extends State<ConfirmarPresencaView> {
                       child: DropdownButton<String>(
                         isExpanded: true,
                         value: _controller.pontoEmbarque,
-                        hint: const Text('Nenhum ponto cadastrado'),
                         items: [
-                          for (final nome in _controller.nomesPontos)
+                          for (final nome in _pontos)
                             DropdownMenuItem(value: nome, child: Text(nome)),
                         ],
                         onChanged: (novoPonto) {
@@ -74,16 +77,14 @@ class _ConfirmarPresencaViewState extends State<ConfirmarPresencaView> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: semPontos
-                          ? null
-                          : () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Presença atualizada com sucesso!'),
-                                ),
-                              );
-                              Navigator.pop(context);
-                            },
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Presença atualizada com sucesso!'),
+                          ),
+                        );
+                        Navigator.pop(context);
+                      },
                       child: const Text('Salvar Presença'),
                     ),
                   ),

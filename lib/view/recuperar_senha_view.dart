@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../controller/recuperar_senha_controller.dart';
+import '../utils/validadores.dart';
 
 class RecuperarSenhaView extends StatefulWidget {
   const RecuperarSenhaView({super.key});
@@ -9,13 +9,11 @@ class RecuperarSenhaView extends StatefulWidget {
 }
 
 class _RecuperarSenhaViewState extends State<RecuperarSenhaView> {
-  final _controller = RecuperarSenhaController();
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
 
   @override
   void dispose() {
-    _controller.dispose();
     _emailCtrl.dispose();
     super.dispose();
   }
@@ -24,17 +22,7 @@ class _RecuperarSenhaViewState extends State<RecuperarSenhaView> {
     // Campo preenchido e e-mail com formato válido (validator do Form)
     if (!_formKey.currentState!.validate()) return;
 
-    final erro = _controller.solicitarRecuperacao(_emailCtrl.text);
-    if (erro != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(erro),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
-      );
-      return;
-    }
-
+    // Nesta etapa (somente front-end) o envio é simulado
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -89,7 +77,7 @@ class _RecuperarSenhaViewState extends State<RecuperarSenhaView> {
                     prefixIcon: Icon(Icons.email_outlined),
                     border: OutlineInputBorder(),
                   ),
-                  validator: _controller.validarEmail,
+                  validator: Validadores.email,
                 ),
                 const SizedBox(height: 24),
                 SizedBox(

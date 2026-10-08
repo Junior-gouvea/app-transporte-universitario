@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../controller/sobre_controller.dart';
 import '../widgets/logo_app.dart';
 
 class SobreView extends StatefulWidget {
@@ -10,13 +9,23 @@ class SobreView extends StatefulWidget {
 }
 
 class _SobreViewState extends State<SobreView> {
-  final _controller = SobreController();
+  static const String _nomeApp = 'Transporte Universitário';
+  static const String _versao = '1.0.0';
+  static const String _objetivo =
+      'Facilitar a organização do transporte de alunos universitários: o aluno '
+      'confirma sua presença na ida e na volta e escolhe o ponto de embarque, '
+      'enquanto o motorista consulta a lista de passageiros e gerencia os '
+      'pontos de embarque.';
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  
+  static const List<String> _integrantes = [
+    'Júnior Candido Gouvêa',
+    'João Gabriel Meloni Coutinho',
+  ];
+
+  static const String _disciplina = 'Programação a Dispositivos Movéis';
+  static const String _instituicao = 'FATEC Ribeirão Preto';
+  static const String _professor = 'Rodrigo Plotze';
 
   @override
   Widget build(BuildContext context) {
@@ -29,31 +38,30 @@ class _SobreViewState extends State<SobreView> {
             const LogoApp(tamanho: 96),
             const SizedBox(height: 12),
             Text(
-              _controller.nomeApp,
+              _nomeApp,
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
                   .headlineSmall
                   ?.copyWith(fontWeight: FontWeight.bold),
             ),
-            Text(
-              'Versão ${_controller.versao}',
+            const Text(
+              'Versão $_versao',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 20),
-            Card(
+            const Card(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Objetivo do aplicativo',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 8),
-                    Text(_controller.objetivo),
+                    SizedBox(height: 8),
+                    Text(_objetivo),
                   ],
                 ),
               ),
@@ -69,7 +77,7 @@ class _SobreViewState extends State<SobreView> {
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    for (final nome in _controller.integrantes)
+                    for (final nome in _integrantes)
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: const Icon(Icons.person),
@@ -79,34 +87,34 @@ class _SobreViewState extends State<SobreView> {
                 ),
               ),
             ),
-            Card(
+            const Card(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Informações acadêmicas',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.menu_book),
-                      title: const Text('Disciplina'),
-                      subtitle: Text(_controller.disciplina),
+                      leading: Icon(Icons.menu_book),
+                      title: Text('Disciplina'),
+                      subtitle: Text(_disciplina),
                     ),
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.school),
-                      title: const Text('Instituição'),
-                      subtitle: Text(_controller.instituicao),
+                      leading: Icon(Icons.school),
+                      title: Text('Instituição'),
+                      subtitle: Text(_instituicao),
                     ),
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.badge),
-                      title: const Text('Professor'),
-                      subtitle: Text(_controller.professor),
+                      leading: Icon(Icons.badge),
+                      title: Text('Professor'),
+                      subtitle: Text(_professor),
                     ),
                   ],
                 ),

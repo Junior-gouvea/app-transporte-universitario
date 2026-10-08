@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import '../controller/gerenciar_pontos_controller.dart';
 import '../utils/validadores.dart';
 
 class GerenciarPontosView extends StatefulWidget {
@@ -11,9 +9,12 @@ class GerenciarPontosView extends StatefulWidget {
 }
 
 class _GerenciarPontosViewState extends State<GerenciarPontosView> {
-  // Singleton compartilhado com a tela de Confirmar Presença.
-  // Não chamar dispose aqui: ele continua em uso pelo app.
-  final _controller = GetIt.I<GerenciarPontosController>();
+  // Dados estáticos (mockados) para demonstrar a listagem
+  final List<({String nome, String horario})> _pontos = [
+    (nome: 'Praça Central', horario: '18:10'),
+    (nome: 'Posto de Combustível', horario: '18:20'),
+    (nome: 'Entrada da Cidade', horario: '18:30'),
+  ];
 
   Future<void> _novoPonto() async {
     final resultado = await showDialog<(String, String)>(
@@ -22,20 +23,29 @@ class _GerenciarPontosViewState extends State<GerenciarPontosView> {
     );
     if (resultado == null || !mounted) return;
 
-    final erro = _controller.adicionar(
-      nome: resultado.$1,
-      horario: resultado.$2,
+    final nome = resultado.$1;
+    final jaExiste = _pontos.any(
+      (p) => p.nome.toLowerCase() == nome.toLowerCase(),
     );
+    if (jaExiste) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Já existe um ponto com este nome.'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _pontos.add((nome: nome, horario: resultado.$2)));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(erro ?? 'Ponto de embarque adicionado!'),
-        backgroundColor: erro != null ? Theme.of(context).colorScheme.error : null,
-      ),
+      const SnackBar(content: Text('Ponto de embarque adicionado!')),
     );
   }
 
-  void _remover(String id, String nome) {
-    _controller.remover(id);
+  void _remover(int index) {
+    final nome = _pontos[index].nome;
+    setState(() => _pontos.removeAt(index));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('"$nome" removido.')),
     );
@@ -51,36 +61,27 @@ class _GerenciarPontosViewState extends State<GerenciarPontosView> {
         label: const Text('Novo ponto'),
       ),
       body: SafeArea(
-        child: ListenableBuilder(
-          listenable: _controller,
-          builder: (context, _) {
-            final pontos = _controller.pontos;
-            if (pontos.isEmpty) {
-              return const Center(
-                child: Text('Nenhum ponto cadastrado.'),
-              );
-            }
-            return ListView.builder(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 90),
-              itemCount: pontos.length,
-              itemBuilder: (context, index) {
-                final ponto = pontos[index];
-                return Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.place),
-                    title: Text(ponto.nome),
-                    subtitle: Text('Horário de saída: ${ponto.horario}'),
-                    trailing: IconButton(
-                      tooltip: 'Remover ponto',
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => _remover(ponto.id, ponto.nome),
+        child: _pontos.isEmpty
+            ? const Center(child: Text('Nenhum ponto cadastrado.'))
+            : ListView.builder(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 90),
+                itemCount: _pontos.length,
+                itemBuilder: (context, index) {
+                  final ponto = _pontos[index];
+                  return Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.place),
+                      title: Text(ponto.nome),
+                      subtitle: Text('Horário de saída: ${ponto.horario}'),
+                      trailing: IconButton(
+                        tooltip: 'Remover ponto',
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: () => _remover(index),
+                      ),
                     ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
+                  );
+                },
+              ),
       ),
     );
   }
