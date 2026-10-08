@@ -12,71 +12,87 @@ class _ConfirmarPresencaViewState extends State<ConfirmarPresencaView> {
   final _controller = ConfirmarPresencaController();
 
   @override
-  void initState() {
-    super.initState();
-    // Escuta as alterações no controller para atualizar a interface
-    _controller.addListener(() {
-      setState(() {});
-    });
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Confirmar Presença'),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              SwitchListTile(
-                title: const Text('Vou na ida'),
-                subtitle: const Text('Saída da cidade para a faculdade'),
-                value: _controller.vaiNaIda,
-                onChanged: (val) => _controller.alternarIda(val),
-              ),
-              const Divider(),
-              SwitchListTile(
-                title: const Text('Vou na volta'),
-                subtitle: const Text('Retorno da faculdade para casa'),
-                value: _controller.vaiNaVolta,
-                onChanged: (val) => _controller.alternarVolta(val),
-              ),
-              const SizedBox(height: 20),
-              DropdownButtonFormField<String>(
-              initialValue: _controller.pontoEmbarque,   // antes: value:
-              decoration: const InputDecoration(
-                  labelText: 'Ponto de Embarque / Desembarque',
-                  border: OutlineInputBorder(),
-                ),
-                items: const [
-                  DropdownMenuItem(value: 'Praça Central', child: Text('Praça Central')),
-                  DropdownMenuItem(value: 'Posto de Combustível', child: Text('Posto de Combustível')),
-                  DropdownMenuItem(value: 'Entrada da Cidade', child: Text('Entrada da Cidade')),
-                ],
-                onChanged: (novoPonto) {
-                  if (novoPonto != null) _controller.alterarPonto(novoPonto);
-                },
-              ),
-              const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Presença atualizada com sucesso!')),
-                    );
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Salvar Presença'),
-                ),
-              ),
-            ],
+    // ListenableBuilder escuta o controller e remove o listener sozinho
+    return ListenableBuilder(
+      listenable: _controller,
+      builder: (context, _) {
+        final semPontos = _controller.pontoEmbarque == null;
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Confirmar Presença'),
           ),
-        ),
-      ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  SwitchListTile(
+                    title: const Text('Vou na ida'),
+                    subtitle: const Text('Saída da cidade para a faculdade'),
+                    value: _controller.vaiNaIda,
+                    onChanged: _controller.alternarIda,
+                  ),
+                  const Divider(),
+                  SwitchListTile(
+                    title: const Text('Vou na volta'),
+                    subtitle: const Text('Retorno da faculdade para casa'),
+                    value: _controller.vaiNaVolta,
+                    onChanged: _controller.alternarVolta,
+                  ),
+                  const SizedBox(height: 20),
+                  // Itens vêm dos pontos cadastrados em Gerenciar Pontos
+                  InputDecorator(
+                    decoration: const InputDecoration(
+                      labelText: 'Ponto de Embarque / Desembarque',
+                      border: OutlineInputBorder(),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: _controller.pontoEmbarque,
+                        hint: const Text('Nenhum ponto cadastrado'),
+                        items: [
+                          for (final nome in _controller.nomesPontos)
+                            DropdownMenuItem(value: nome, child: Text(nome)),
+                        ],
+                        onChanged: (novoPonto) {
+                          if (novoPonto != null) {
+                            _controller.alterarPonto(novoPonto);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: semPontos
+                          ? null
+                          : () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Presença atualizada com sucesso!'),
+                                ),
+                              );
+                              Navigator.pop(context);
+                            },
+                      child: const Text('Salvar Presença'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

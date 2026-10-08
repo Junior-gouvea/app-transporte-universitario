@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import '../controller/gerenciar_pontos_controller.dart';
 import '../utils/validadores.dart';
 
@@ -10,13 +11,9 @@ class GerenciarPontosView extends StatefulWidget {
 }
 
 class _GerenciarPontosViewState extends State<GerenciarPontosView> {
-  final _controller = GerenciarPontosController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  // Singleton compartilhado com a tela de Confirmar Presença.
+  // Não chamar dispose aqui: ele continua em uso pelo app.
+  final _controller = GetIt.I<GerenciarPontosController>();
 
   Future<void> _novoPonto() async {
     final resultado = await showDialog<(String, String)>(
@@ -25,9 +22,15 @@ class _GerenciarPontosViewState extends State<GerenciarPontosView> {
     );
     if (resultado == null || !mounted) return;
 
-    _controller.adicionar(nome: resultado.$1, horario: resultado.$2);
+    final erro = _controller.adicionar(
+      nome: resultado.$1,
+      horario: resultado.$2,
+    );
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Ponto de embarque adicionado!')),
+      SnackBar(
+        content: Text(erro ?? 'Ponto de embarque adicionado!'),
+        backgroundColor: erro != null ? Theme.of(context).colorScheme.error : null,
+      ),
     );
   }
 

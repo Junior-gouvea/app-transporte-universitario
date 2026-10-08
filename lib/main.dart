@@ -1,3 +1,4 @@
+import 'package:app_projeto/controller/gerenciar_pontos_controller.dart';
 import 'package:app_projeto/controller/sessao_controller.dart';
 import 'package:app_projeto/view/cadastro_usuario_view.dart';
 import 'package:app_projeto/view/confirmar_presenca_view.dart';
@@ -17,6 +18,12 @@ void main() {
   // Sessão (usuário logado) compartilhada entre todas as telas
   if (!GetIt.I.isRegistered<SessaoController>()) {
     GetIt.I.registerSingleton<SessaoController>(SessaoController());
+  }
+  // Pontos de embarque compartilhados (Gerenciar Pontos + Confirmar Presença)
+  if (!GetIt.I.isRegistered<GerenciarPontosController>()) {
+    GetIt.I.registerSingleton<GerenciarPontosController>(
+      GerenciarPontosController(),
+    );
   }
 
   runApp(
