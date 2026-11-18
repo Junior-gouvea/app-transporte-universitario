@@ -1,0 +1,187 @@
+import 'package:flutter/material.dart';
+import '../controller/lista_motorista_controller.dart';
+import '../model/presenca_model.dart';
+
+enum _Filtro { todos, ida, volta }
+
+class ListaMotoristaView extends StatefulWidget {
+  const ListaMotoristaView({super.key});
+
+  @override
+  State<ListaMotoristaView> createState() => _ListaMotoristaViewState();
+}
+
+class _ListaMotoristaViewState extends State<ListaMotoristaView> {
+  final _controller = ListaMotoristaController();
+  _Filtro _filtro = _Filtro.todos;
+
+  List<PresencaModel> _filtrar(List<PresencaModel> todos) {
+    switch (_filtro) {
+      case _Filtro.ida:
+        return todos.where((a) => a.vaiNaIda).toList();
+      case _Filtro.volta:
+        return todos.where((a) => a.vaiNaVolta).toList();
+      case _Filtro.todos:
+        return todos;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Lista do Motorista')),
+      body: SafeArea(
+        child: StreamBuilder<List<PresencaModel>>(
+          stream: _controller.streamPresencas(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Erro ao carregar a lista de passageiros.'),
+                    const SizedBox(height: 8),
+                    ElevatedButton(
+                      onPressed: () => setState(() {}),
+                      child: const Text('Tentar novamente'),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final todosAlunos = snapshot.data ?? [];
+            final alunos = _filtrar(todosAlunos);
+            final totalIda = todosAlunos.where((a) => a.vaiNaIda).length;
+            final totalVolta = todosAlunos.where((a) => a.vaiNaVolta).length;
+
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _ResumoCard(
+                          titulo: 'Ida',
+                          total: totalIda,
+                          icone: Icons.arrow_forward,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _ResumoCard(
+                          titulo: 'Volta',
+                          total: totalVolta,
+                          icone: Icons.arrow_back,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: SegmentedButton<_Filtro>(
+                      segments: const [
+                        ButtonSegment(value: _Filtro.todos, label: Text('Todos')),
+                        ButtonSegment(value: _Filtro.ida, label: Text('Ida')),
+                        ButtonSegment(value: _Filtro.volta, label: Text('Volta')),
+                      ],
+                      selected: {_filtro},
+                      onSelectionChanged: (selecao) =>
+                          setState(() => _filtro = selecao.first),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: alunos.isEmpty
+                      ? const Center(child: Text('Nenhum aluno confirmado.'))
+                      : ListView.builder(
+                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                          itemCount: alunos.length,
+                          itemBuilder: (context, index) {
+                            final aluno = alunos[index];
+                            final inicial = aluno.nomeAluno.isNotEmpty
+                                ? aluno.nomeAluno[0].toUpperCase()
+                                : '?';
+                            return Card(
+                              child: ListTile(
+                                leading: CircleAvatar(child: Text(inicial)),
+                                title: Text(aluno.nomeAluno),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Embarque: ${aluno.pontoEmbarque}'),
+                                    const SizedBox(height: 4),
+                                    Wrap(
+                                      spacing: 6,
+                                      children: [
+                                        if (aluno.vaiNaIda)
+                                          const Chip(
+                                            visualDensity: VisualDensity.compact,
+                                            avatar: Icon(Icons.arrow_forward, size: 16),
+                                            label: Text('Ida'),
+                                          ),
+                                        if (aluno.vaiNaVolta)
+                                          const Chip(
+                                            visualDensity: VisualDensity.compact,
+                                            avatar: Icon(Icons.arrow_back, size: 16),
+                                            label: Text('Volta'),
+                                          ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _ResumoCard extends StatelessWidget {
+  final String titulo;
+  final int total;
+  final IconData icone;
+
+  const _ResumoCard({
+    required this.titulo,
+    required this.total,
+    required this.icone,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Icon(icone, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: 4),
+            Text(
+              '$total',
+              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            Text('Passageiros ($titulo)'),
+          ],
+        ),
+      ),
+    );
+  }
+}

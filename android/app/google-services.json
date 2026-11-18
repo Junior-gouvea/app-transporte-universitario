@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1024950974045",
+    "project_id": "app-transporte-universitario",
+    "storage_bucket": "app-transporte-universitario.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024950974045:android:51303facdb908ffa2b3fb4",
+        "android_client_info": {
+          "package_name": "com.example.app_projeto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaCaeIjA5C-y8jsdvmGc0VJfEJlVhMuXA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
